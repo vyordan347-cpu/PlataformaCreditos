@@ -1,0 +1,74 @@
+@model PlataformaCreditos.ViewModels.SolicitudesFiltroViewModel
+
+@{
+    ViewData["Title"] = "Mis solicitudes";
+}
+
+<h1>Mis solicitudes</h1>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <label class="form-label">Estado</label>
+        <select name="estado" class="form-select">
+            <option value="">Todos</option>
+            <option value="Pendiente" selected="@(Model.Estado == "Pendiente")">Pendiente</option>
+            <option value="Aprobado" selected="@(Model.Estado == "Aprobado")">Aprobado</option>
+            <option value="Rechazado" selected="@(Model.Estado == "Rechazado")">Rechazado</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Monto mínimo</label>
+        <input name="montoMin" class="form-control" type="number" step="0.01" value="@Model.MontoMin" />
+        <span class="text-danger">@Html.ValidationMessage("MontoMin")</span>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Monto máximo</label>
+        <input name="montoMax" class="form-control" type="number" step="0.01" value="@Model.MontoMax" />
+        <span class="text-danger">@Html.ValidationMessage("MontoMax")</span>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Fecha inicio</label>
+        <input name="fechaInicio" class="form-control" type="date" value="@Model.FechaInicio?.ToString("yyyy-MM-dd")" />
+        <span class="text-danger">@Html.ValidationMessage("FechaInicio")</span>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Fecha fin</label>
+        <input name="fechaFin" class="form-control" type="date" value="@Model.FechaFin?.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Solicitudes)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>S/ @item.MontoSolicitado</td>
+            <td>@item.FechaSolicitud.ToString("dd/MM/yyyy")</td>
+            <td>@item.Estado</td>
+            <td>
+                <a asp-controller="Solicitudes" asp-action="Detalle" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                    Ver detalle
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
