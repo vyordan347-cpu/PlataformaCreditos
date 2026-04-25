@@ -4,19 +4,19 @@ Sistema web desarrollado con ASP.NET Core MVC para la gestión de solicitudes de
 
 ---
 
-## 🌐 URL del sistema
+## URL del sistema
 
 https://plataformacreditos-xz9p.onrender.com/
 
 ---
 
-## 📦 Repositorio
+## Repositorio
 
 https://github.com/vyordan347-cpu/PlataformaCreditos.git
 
 ---
 
-## 🧰 Tecnologías utilizadas
+## Tecnologías utilizadas
 
 * ASP.NET Core MVC (.NET 8)
 * Entity Framework Core
