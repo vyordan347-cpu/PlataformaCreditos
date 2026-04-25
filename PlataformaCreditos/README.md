@@ -30,7 +30,7 @@ https://github.com/vyordan347-cpu/PlataformaCreditos.git
 
 ---
 
-## ⚙️ Funcionalidades
+## Funcionalidades
 
 ### Usuario
 
