@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaCreditos.Data;
 using PlataformaCreditos.ViewModels;
+using PlataformaCreditos.Models;
 
 namespace PlataformaCreditos.Controllers;
 
@@ -96,4 +97,63 @@ public class SolicitudesController : Controller
 
         return View(solicitud);
     }
+    public IActionResult Crear()
+{
+    return View(new CrearSolicitudViewModel());
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Crear(CrearSolicitudViewModel vm)
+{
+    var userId = _userManager.GetUserId(User);
+
+    var cliente = await _context.Clientes
+        .FirstOrDefaultAsync(c => c.UsuarioId == userId);
+
+    if (cliente == null)
+    {
+        ModelState.AddModelError("", "No existe un cliente asociado a este usuario.");
+    }
+    else
+    {
+        if (!cliente.Activo)
+        {
+            ModelState.AddModelError("", "El cliente no está activo.");
+        }
+
+        var tienePendiente = await _context.SolicitudesCredito
+            .AnyAsync(s => s.ClienteId == cliente.Id && s.Estado == "Pendiente");
+
+        if (tienePendiente)
+        {
+            ModelState.AddModelError("", "No puedes registrar otra solicitud mientras tengas una pendiente.");
+        }
+
+        if (vm.MontoSolicitado > cliente.IngresosMensuales * 10)
+        {
+            ModelState.AddModelError("MontoSolicitado", "El monto solicitado no puede superar 10 veces tus ingresos mensuales.");
+        }
+    }
+
+    if (!ModelState.IsValid)
+    {
+        return View(vm);
+    }
+
+    var solicitud = new SolicitudCredito
+    {
+        ClienteId = cliente!.Id,
+        MontoSolicitado = vm.MontoSolicitado,
+        FechaSolicitud = DateTime.Now,
+        Estado = "Pendiente"
+    };
+
+    _context.SolicitudesCredito.Add(solicitud);
+    await _context.SaveChangesAsync();
+
+    TempData["Mensaje"] = "Solicitud registrada correctamente.";
+
+    return RedirectToAction(nameof(MisSolicitudes));
+}
 }
