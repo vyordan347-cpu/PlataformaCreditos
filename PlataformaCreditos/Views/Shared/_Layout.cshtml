@@ -29,6 +29,22 @@
                             <a class="nav-link text-dark" asp-controller="Solicitudes" asp-action="MisSolicitudes">Mis solicitudes</a>
                         </li>
                     </ul>
+                    @{
+                    var ultimaSolicitudMonto = Context.Session.GetString("UltimaSolicitudMonto");
+                    var ultimaSolicitudId = Context.Session.GetString("UltimaSolicitudId");
+                    }
+
+                    @if (ultimaSolicitudMonto != null && ultimaSolicitudId != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"
+                                asp-controller="Solicitudes"
+                                asp-action="Detalle"
+                                asp-route-id="@ultimaSolicitudId">
+                            Ver última solicitud S/ @ultimaSolicitudMonto
+                            </a>
+                        </li>
+                    }
                     <partial name="_LoginPartial" />
                 </div>
             </div>
